@@ -54,3 +54,12 @@ pip install -r requirements.txt -r requirements-dev.txt
 flake8
 pytest -q
 ```
+
+
+## SAST with Sonar (Iteration 4)
+- Adds `sonar-project.properties` and a `sast-sonar` job in CI.
+- Configure **SonarCloud** (recommended for simplicity):
+  1. Create a project in SonarCloud and note the `projectKey` and `organization`.
+  2. Set **Repository Secret** `SONAR_TOKEN` (from SonarCloud) in GitHub → Settings → Secrets → Actions.
+  3. Edit `sonar-project.properties` with your `projectKey` & `organization`.
+- On each push/PR, CI runs lint+tests. If `SONAR_TOKEN` is set, SAST runs and waits for the quality gate.
