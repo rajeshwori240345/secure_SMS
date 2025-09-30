@@ -111,13 +111,16 @@ jobs:
 
       - name: Start Flask app (background)
         env:
-          FLASK_APP: app.app
+          FLASK_ENV: production
+          SECRET_KEY: test_secret_key
+          JWT_SECRET_KEY: test_jwt_key
+          ENCRYPTION_KEY: "bXktdGVzdC1lbmNyeXB0aW9uLWtleS1mb3ItZGVtby0xMjM0NTY3ODkwMTIzNA=="
         run: |
-          nohup python -m flask --app app.app run --host 0.0.0.0 --port 8000 >/dev/null 2>&1 &
-          # wait until port is open
+          nohup python run.py >/dev/null 2>&1 &
           for i in {1..30}; do
-            if curl -sSf http://127.0.0.1:8000/health >/dev/null; then
-              echo "App is up"
+            code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/)
+            if [ "$code" = "200" ] || [ "$code" = "302" ]; then
+              echo "App is up with HTTP $code"
               break
             fi
             echo "Waiting for app to start... ($i)"
@@ -147,3 +150,4 @@ jobs:
         with:
           name: app-logs
           path: logs/*.log
+          if-no-files-found: ignore
