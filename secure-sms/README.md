@@ -69,3 +69,9 @@ pytest -q
 - Adds **TruffleHog** to CI to detect leaked secrets (API keys, tokens) in repo/history.
 - The job fails if verified secrets are found. Remove/rotate any flagged credentials and re-push.
 - Tip: Keep secrets in environment variables or GitHub Actions Secrets—never in code.
+
+
+## Dependency Vulnerability Scanning (Iteration 6)
+- Adds **pip-audit** job (`sca-deps`) to CI to detect known CVEs in Python dependencies.
+- Fails the job if high/critical vulnerabilities are found.
+- Adds **Dependabot** (`.github/dependabot.yml`) to auto-open PRs for outdated/vulnerable packages.
