@@ -14,3 +14,9 @@ venv/
 # Env/Secrets
 .env
 *.env
+
+# Local DB & secrets
+sms.db
+*.sqlite
+*.db
+.env
