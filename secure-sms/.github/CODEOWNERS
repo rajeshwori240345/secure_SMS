@@ -1,0 +1,3 @@
+# Example CODEOWNERS (adjust GitHub usernames or teams)
+# All files require review by the security/devs team
+*       @your-org/security-team  @your-org/backend-team

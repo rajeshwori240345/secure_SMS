@@ -75,3 +75,12 @@ pytest -q
 - Adds **pip-audit** job (`sca-deps`) to CI to detect known CVEs in Python dependencies.
 - Fails the job if high/critical vulnerabilities are found.
 - Adds **Dependabot** (`.github/dependabot.yml`) to auto-open PRs for outdated/vulnerable packages.
+
+
+## Tests & PR Review Gates (Iteration 7)
+- Adds **CODEOWNERS** to enforce reviews from designated teams/users.
+- Recommended repo settings (GitHub → Settings → Branches → Branch protection rules):
+  - Require pull request reviews before merging (at least 1–2 reviewers)
+  - Require status checks to pass (CI jobs: lint, tests, SAST, secrets, SCA)
+  - Require branches up to date before merging
+- The pipeline already fails on lint/test errors; SAST/secrets/SCA also gate merges.
