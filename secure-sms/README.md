@@ -42,3 +42,15 @@ python -m flask --app app.app run
 ## Documentation
 - See `docs/threat-model.md` for identified assets, threats, and mitigations.
 - See `docs/security-requirements.md` for detailed functional and security requirements.
+
+
+## CI: Linting & Test Scaffold (Iteration 3)
+- Uses **flake8** for lint checks
+- Uses **pytest** for tests
+- Sample test covers the `/health` endpoint
+Run locally:
+```bash
+pip install -r requirements.txt -r requirements-dev.txt
+flake8
+pytest -q
+```
