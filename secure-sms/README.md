@@ -63,3 +63,9 @@ pytest -q
   2. Set **Repository Secret** `SONAR_TOKEN` (from SonarCloud) in GitHub → Settings → Secrets → Actions.
   3. Edit `sonar-project.properties` with your `projectKey` & `organization`.
 - On each push/PR, CI runs lint+tests. If `SONAR_TOKEN` is set, SAST runs and waits for the quality gate.
+
+
+## Secret Scanning (Iteration 5)
+- Adds **TruffleHog** to CI to detect leaked secrets (API keys, tokens) in repo/history.
+- The job fails if verified secrets are found. Remove/rotate any flagged credentials and re-push.
+- Tip: Keep secrets in environment variables or GitHub Actions Secrets—never in code.

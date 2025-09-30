@@ -56,3 +56,17 @@ jobs:
         with:
           args: >
             -Dsonar.qualitygate.wait=true
+
+  secrets-scan:
+    runs-on: ubuntu-latest
+    needs: build-test-lint
+    steps:
+      - name: Checkout (full history for scanning)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog-actions-scan@v0.20.4
+        with:
+          scanArguments: --only-verified
