@@ -1,9 +1,10 @@
-import json
-from app.app import app
+import re
+from run import app
 
-def test_health_endpoint():
+def test_root_redirects_to_login():
     client = app.test_client()
-    resp = client.get('/health')
-    assert resp.status_code == 200
-    payload = resp.get_json()
-    assert payload.get('status') == 'ok'
+    resp = client.get('/', follow_redirects=False)
+    # Expect redirect (302) to /login
+    assert resp.status_code in (301, 302)
+    loc = resp.headers.get('Location','')
+    assert '/login' in loc
