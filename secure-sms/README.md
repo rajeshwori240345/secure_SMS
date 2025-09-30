@@ -90,3 +90,9 @@ pytest -q
 - CI job **dast-zap** starts the Flask app on `http://localhost:8000` and runs **OWASP ZAP Baseline** against it.
 - Report (`zap-baseline-report.html`) is uploaded as a CI artifact on every run.
 - You can tune ZAP alerts in `.zap/rules.tsv` (e.g., ignore low/false-positive rules temporarily).
+
+
+## Monitoring & Audit Logging (Iteration 9)
+- Adds basic request/response logging with a rotating file handler → `logs/app.log`.
+- CI uploads runtime logs as artifacts alongside ZAP reports for quick triage.
+- Next steps (future): integrate SIEM/ELK, add alerting on anomalies, and expand audit events.
