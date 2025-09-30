@@ -84,3 +84,9 @@ pytest -q
   - Require status checks to pass (CI jobs: lint, tests, SAST, secrets, SCA)
   - Require branches up to date before merging
 - The pipeline already fails on lint/test errors; SAST/secrets/SCA also gate merges.
+
+
+## Staging Deploy & DAST (Iteration 8)
+- CI job **dast-zap** starts the Flask app on `http://localhost:8000` and runs **OWASP ZAP Baseline** against it.
+- Report (`zap-baseline-report.html`) is uploaded as a CI artifact on every run.
+- You can tune ZAP alerts in `.zap/rules.tsv` (e.g., ignore low/false-positive rules temporarily).
