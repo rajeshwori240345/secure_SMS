@@ -57,7 +57,7 @@ def otp():
         code = form.code.data.strip()
         real = session.get("otp_code")
         exp = session.get("otp_expires", 0)
-        if real and code == real and time.time() <= exp:
+        if real and str(code) == str(real) and datetime.utcnow().timestamp() <= exp:
             # All good -> log the user in and go to biometric
             user = User.query.get(session["preauth_user_id"])
             login_user(user)
