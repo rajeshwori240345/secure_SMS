@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Enter OTP - Secure SMS{% endblock %}
+{% block content %}
+<div class="card shadow">
+  <div class="card-body">
+    <h3 class="mb-3">Two-Factor Authentication</h3>
+    <p>We sent a 6-digit code to your email. It was also printed to the console for development. Please enter it below.</p>
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <div class="mb-3">{{ form.code.label }} {{ form.code(class="form-control", maxlength="6") }}</div>
+      {{ form.submit(class="btn btn-primary") }}
+    </form>
+  </div>
+</div>
+{% endblock %}

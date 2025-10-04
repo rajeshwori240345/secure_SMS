@@ -1,0 +1,9 @@
+2025-09-30 00:18:23,859 INFO OTP code issued for user admin
+2025-09-30 00:18:42,760 INFO 2FA success for user admin
+2025-09-30 00:18:46,052 INFO Biometric simulated OK for user admin
+2025-10-01 12:58:12,203 WARNING 2FA failure for preauth user id 2
+2025-10-01 12:58:21,147 INFO User registered: cihe240345 (admin)
+2025-10-01 12:58:27,470 INFO OTP code issued for user cihe240345
+2025-10-01 12:58:29,089 INFO OTP code issued for user cihe240345
+2025-10-01 12:58:54,616 INFO 2FA success for user cihe240345
+2025-10-01 12:58:56,294 INFO Biometric simulated OK for user cihe240345
