@@ -1,98 +1,107 @@
-# Secure Student Management System (DevSecOps-Driven)
+# Secure Student Management System (Flask)
 
-This repository hosts the Secure Student Management System (SMS) developed with a DevSecOps mindset.
-Security is integrated from day one via CI/CD, automated checks, and clear security requirements.
+A secure Student Management System built with Flask for local Windows development.
 
-## Project Goals
-- Build a web-based SMS using Flask with strong built-in security
-- Adopt DevSecOps: shift-left, automation, continuous testing, monitoring
-- Deliver a clean CI/CD pipeline that scales as features are added
+## Features
+- Registration, Login, Logout
+- **2FA via Email OTP** (also always printed in console)
+- **Simulated Biometric Step** after OTP
+- **RBAC** (admin, teacher, student)
+- **CRUD** for Students (admin/teacher) and Teachers (admin)
+- **AES encryption (Fernet)** for sensitive fields (student address)
+- **JWT API** for programmatic access (`/api/login`, `/api/students` GET/POST)
+- **Audit Logging** to `logs/audit.log`
+- **Analytics Dashboard** (grade distribution with Chart.js)
+- **Encrypted Backup/Restore** of SQLite DB
+- **Sample Data** (admin/teacher/student users + students/teachers)
 
-## Initial Security Requirements (will evolve)
-- Use version control with protected branches and PR reviews
-- No secrets in code; use environment variables and CI secrets
-- Enforce secure defaults (later): CSRF protection, secure cookies, TLS, headers
-- Plan for SAST/DAST, dependency scanning, and secret scanning in CI/CD
+## Quick Start (Windows)
+1. **Install Python 3.8+** and git (optional).
+2. Unzip this project, open terminal here.
+3. Create venv and install deps:
+   ```bat
+   python -m venv venv
+   venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+4. Configure environment:
+   - Copy `.env.example` to `.env` and fill values.
+   - Generate `ENCRYPTION_KEY`:
+     ```bat
+     python generate_key.py
+     ```
+     Copy output into `.env` as `ENCRYPTION_KEY=...`
+   - (Optional) Set SMTP settings for email OTP in `.env`. If not set, OTP still prints to console.
+5. Initialize database with sample data:
+   ```bat
+   python init_db.py
+   ```
+6. Run the app:
+   ```bat
+   set FLASK_APP=run.py
+   set FLASK_ENV=development
+   flask run
+   ```
+   Open http://127.0.0.1:5000
 
-## Iteration Plan (high-level)
-1. **(This commit)** Repo bootstrap + CI skeleton
-2. Threat model & requirements docs
-3. CI: lint + test scaffold
-4. CI: SAST
-5. CI: secret scanning
-6. CI: dependency/SCA scanning
-7. Tests + PR review gates
-8. Staging deploy + DAST
-9. Monitoring & audit logging
-10. Full Flask app integration & release
+**Sample accounts**
+- Admin: `admin / Admin@123`
+- Teacher: `teacher1 / Teacher@123`
+- Student: `student1 / Student@123`
 
-## Local Dev (placeholder)
-```bash
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-python -m flask --app app.app run
-```
+## Notes
+- **Avoid "cryptography.fernet.InvalidToken"**: Ensure `ENCRYPTION_KEY` is set **before** running `init_db.py` or creating any encrypted data. If you change the key later, previously encrypted fields/backups cannot be decrypted.
+- OTP emails are attempted via Flask-Mail and **always logged/printed** to console for dev.
+- After restore, **restart** the app so SQLAlchemy picks up the new DB.
 
-## Status
-- CI pipeline skeleton is in place and runs on every push/PR.
-- App code is a *placeholder only*. Full features land in the final iteration.
+## Screenshot Checklist
+1. Registration page (filled example).
+2. Login page (failed attempt message, then success).
+3. OTP entry page + console showing OTP code.
+4. Biometric simulation page (fingerprint verify button).
+5. Dashboard (grade distribution chart).
+6. Students list (admin view) showing decrypted addresses.
+7. New/Edit Student form.
+8. Teachers list and New/Edit Teacher form (admin).
+9. RBAC demo: teacher trying to access admin teachers page (403).
+10. Backup page + downloading encrypted backup.
+11. Restore form (file chooser) + success flash.
+12. Audit log snippet (logs/audit.log) with recent actions.
+13. Postman screenshot: `/api/login` to get JWT, then `/api/students` with Bearer token.
+14. XSS defense: a student name with `<script>` shows as text in list (no alert).
 
+## JWT API Examples
+- Login to get token:
+  ```http
+  POST /api/login
+  Content-Type: application/json
 
-## Documentation
-- See `docs/threat-model.md` for identified assets, threats, and mitigations.
-- See `docs/security-requirements.md` for detailed functional and security requirements.
+  {"username":"admin","password":"Admin@123"}
+  ```
+  Response: `{"access_token":"<JWT>", "role":"admin"}`
 
+- List students:
+  ```http
+  GET /api/students
+  Authorization: Bearer <JWT>
+  ```
 
-## CI: Linting & Test Scaffold (Iteration 3)
-- Uses **flake8** for lint checks
-- Uses **pytest** for tests
-- Sample test covers the `/health` endpoint
-Run locally:
-```bash
-pip install -r requirements.txt -r requirements-dev.txt
-flake8
-pytest -q
-```
+- Create student:
+  ```http
+  POST /api/students
+  Authorization: Bearer <JWT>
+  Content-Type: application/json
 
+  {"name":"Test User","email":"test.user@example.com","address":"Somewhere","grade":"A"}
+  ```
 
-## SAST with Sonar (Iteration 4)
-- Adds `sonar-project.properties` and a `sast-sonar` job in CI.
-- Configure **SonarCloud** (recommended for simplicity):
-  1. Create a project in SonarCloud and note the `projectKey` and `organization`.
-  2. Set **Repository Secret** `SONAR_TOKEN` (from SonarCloud) in GitHub → Settings → Secrets → Actions.
-  3. Edit `sonar-project.properties` with your `projectKey` & `organization`.
-- On each push/PR, CI runs lint+tests. If `SONAR_TOKEN` is set, SAST runs and waits for the quality gate.
+## Security Practices
+- Passwords hashed with bcrypt.
+- CSRF protection via Flask-WTF.
+- XSS mitigated via Jinja auto-escape.
+- SQL injection prevented by SQLAlchemy ORM/params.
+- Sensitive fields encrypted with Fernet (store key in `.env`).
 
-
-## Secret Scanning (Iteration 5)
-- Adds **TruffleHog** to CI to detect leaked secrets (API keys, tokens) in repo/history.
-- The job fails if verified secrets are found. Remove/rotate any flagged credentials and re-push.
-- Tip: Keep secrets in environment variables or GitHub Actions Secrets—never in code.
-
-
-## Dependency Vulnerability Scanning (Iteration 6)
-- Adds **pip-audit** job (`sca-deps`) to CI to detect known CVEs in Python dependencies.
-- Fails the job if high/critical vulnerabilities are found.
-- Adds **Dependabot** (`.github/dependabot.yml`) to auto-open PRs for outdated/vulnerable packages.
-
-
-## Tests & PR Review Gates (Iteration 7)
-- Adds **CODEOWNERS** to enforce reviews from designated teams/users.
-- Recommended repo settings (GitHub → Settings → Branches → Branch protection rules):
-  - Require pull request reviews before merging (at least 1–2 reviewers)
-  - Require status checks to pass (CI jobs: lint, tests, SAST, secrets, SCA)
-  - Require branches up to date before merging
-- The pipeline already fails on lint/test errors; SAST/secrets/SCA also gate merges.
-
-
-## Staging Deploy & DAST (Iteration 8)
-- CI job **dast-zap** starts the Flask app on `http://localhost:8000` and runs **OWASP ZAP Baseline** against it.
-- Report (`zap-baseline-report.html`) is uploaded as a CI artifact on every run.
-- You can tune ZAP alerts in `.zap/rules.tsv` (e.g., ignore low/false-positive rules temporarily).
-
-
-## Monitoring & Audit Logging (Iteration 9)
-- Adds basic request/response logging with a rotating file handler → `logs/app.log`.
-- CI uploads runtime logs as artifacts alongside ZAP reports for quick triage.
-- Next steps (future): integrate SIEM/ELK, add alerting on anomalies, and expand audit events.
+## Troubleshooting
+- If OTP email fails, check console for `[EMAIL DEV]` message and use that code.
+- If you see `InvalidToken` on viewing student addresses, your `ENCRYPTION_KEY` changed after data was created. Regenerate DB (`python init_db.py`) or restore with the matching key.

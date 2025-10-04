@@ -1,0 +1,22 @@
+
+# Sample Filebeat config (optional).
+filebeat.inputs:
+  - type: log
+    paths:
+      - logs/app.log
+      - logs/audit.log
+      - logs/structured.jsonl
+    json.add_error_key: true
+    json.keys_under_root: false
+    processors:
+      - add_fields:
+          target: project
+          fields:
+            name: SecureSMS
+            env: dev
+
+# Output to Elasticsearch (change hosts/creds accordingly)
+output.elasticsearch:
+  hosts: ["http://localhost:9200"]
+  # username: "elastic"
+  # password: "changeme"
