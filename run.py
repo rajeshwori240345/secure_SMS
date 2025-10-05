@@ -1,5 +1,5 @@
-import os
 from importlib import util
+import os
 
 # Load the Flask app defined in secure-sms/app/__init__.py without relying on an importable package name
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

@@ -9,9 +9,6 @@ from .models import Student, Teacher
 from .forms import StudentForm, TeacherForm
 from . import db
 from .encryption import encrypt_text, decrypt_text, get_fernet
-from werkzeug.utils import secure_filename
-
-
 admin_bp = Blueprint("admin", __name__)
 
 # --- Students CRUD ---
