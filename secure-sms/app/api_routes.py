@@ -8,7 +8,6 @@ list or create students via the API.
 
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt
-import hmac  # unused import but left for future use of constant-time comparisons
 from .models import User, Student
 from . import db
 from .encryption import decrypt_text, encrypt_text

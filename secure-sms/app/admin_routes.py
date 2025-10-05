@@ -2,7 +2,6 @@
 
 import io
 import os
-import sqlite3
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_file, current_app
 from flask_login import login_required
 from .utils import role_required
@@ -186,7 +185,6 @@ def backup_restore():
     if not file:
         flash("No file uploaded.", "warning")
         return redirect(url_for("admin.backup_page"))
-    filename = secure_filename(file.filename)
     data = file.read()
     fernet = get_fernet()
     if not fernet:

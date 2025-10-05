@@ -1,5 +1,4 @@
 import os
-import sys
 from importlib import util
 
 # Load the Flask app defined in secure-sms/app/__init__.py without relying on an importable package name

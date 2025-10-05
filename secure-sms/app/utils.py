@@ -1,7 +1,7 @@
 """Utility functions and decorators for the Secure SMS application."""
 
 from functools import wraps
-from flask import abort, session, current_app
+from flask import abort, current_app
 from flask_mail import Message
 from . import mail
 
