@@ -7,3 +7,12 @@ email-validator
 pytest
 pytest-cov
 ruff
+Flask>=2.3
+Flask-SQLAlchemy
+Flask-Login
+Flask-Bcrypt
+Flask-Mail
+Flask-JWT-Extended
+Flask-WTF
+WTForms
+SQLAlchemy
