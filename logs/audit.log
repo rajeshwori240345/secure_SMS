@@ -1,9 +1,6 @@
-2025-09-30 00:18:23,859 INFO OTP code issued for user admin
-2025-09-30 00:18:42,760 INFO 2FA success for user admin
-2025-09-30 00:18:46,052 INFO Biometric simulated OK for user admin
-2025-10-01 12:58:12,203 WARNING 2FA failure for preauth user id 2
-2025-10-01 12:58:21,147 INFO User registered: cihe240345 (admin)
-2025-10-01 12:58:27,470 INFO OTP code issued for user cihe240345
-2025-10-01 12:58:29,089 INFO OTP code issued for user cihe240345
-2025-10-01 12:58:54,616 INFO 2FA success for user cihe240345
-2025-10-01 12:58:56,294 INFO Biometric simulated OK for user cihe240345
+{"ts": "2025-10-05 23:01:36,039", "level": "INFO", "logger": "audit", "message": "OTP code issued for user admin", "request_id": "a30f88c1", "path": "/login", "method": "POST", "remote_addr": "127.0.0.1", "user": null}
+{"ts": "2025-10-05 23:01:51,359", "level": "INFO", "logger": "audit", "message": "2FA success for user admin", "request_id": "1c9e111a", "path": "/otp", "method": "POST", "remote_addr": "127.0.0.1", "user": "admin@example.com"}
+{"ts": "2025-10-05 23:01:52,775", "level": "INFO", "logger": "audit", "message": "Biometric simulated OK for user admin", "request_id": "c8d4a5ca", "path": "/biometric", "method": "POST", "remote_addr": "127.0.0.1", "user": "admin@example.com"}
+{"ts": "2025-10-05 23:01:55,453", "level": "INFO", "logger": "audit", "message": "User logged out: admin", "request_id": "51a60a66", "path": "/logout", "method": "GET", "remote_addr": "127.0.0.1", "user": null}
+{"ts": "2025-10-05 23:01:59,328", "level": "INFO", "logger": "audit", "message": "OTP code issued for user admin", "request_id": "f5e831d5", "path": "/login", "method": "POST", "remote_addr": "127.0.0.1", "user": null}
+{"ts": "2025-10-05 23:02:04,393", "level": "WARNING", "logger": "audit", "message": "2FA failure for preauth user id 1", "request_id": "acdfbb3d", "path": "/otp", "method": "POST", "remote_addr": "127.0.0.1", "user": null}
