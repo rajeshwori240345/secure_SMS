@@ -1,12 +1,16 @@
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:secure-sms/app/logging_setup.py
 
 =======
 >>>>>>> Stashed changes:app/logging_setup.py
+=======
+>>>>>>> Stashed changes
 import os
 import json
 import uuid
 import logging
 from logging.handlers import RotatingFileHandler
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:secure-sms/app/logging_setup.py
 from logging.config import dictConfig
 
@@ -34,6 +38,8 @@ class RequestContextFilter(logging.Filter):
             record.method = None
             record.path = None
 =======
+=======
+>>>>>>> Stashed changes
 from flask import has_request_context, request
 try:
     from flask_login import current_user
@@ -61,11 +67,15 @@ class RequestContextFilter(logging.Filter):
                 record.user = None
         else:
             record.path = record.method = record.remote_addr = None
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes:app/logging_setup.py
+=======
+>>>>>>> Stashed changes
             record.user = None
         return True
 
 class JSONFormatter(logging.Formatter):
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:secure-sms/app/logging_setup.py
     """Simple JSON formatter"""
     def format(self, record):
@@ -177,6 +187,8 @@ def audit(event: str, **kwargs):
         # fallback
         logger.info("%s %s", event, kwargs)
 =======
+=======
+>>>>>>> Stashed changes
     """Lightweight JSON formatter for structured logs."""
     def format(self, record):
         payload = {
@@ -302,4 +314,7 @@ def audit(event: str, **kwargs):
         logging.getLogger("audit").info(json.dumps({"event": event, **kwargs}, ensure_ascii=False))
     except Exception:
         logging.getLogger("audit").info("%s %s", event, kwargs)
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes:app/logging_setup.py
+=======
+>>>>>>> Stashed changes
