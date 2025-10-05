@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Backup & Restore - Secure SMS{% endblock %}
+{% block content %}
+<div class="card shadow mb-4">
+  <div class="card-body">
+    <h3 class="mb-3">Backup</h3>
+    <a class="btn btn-success" href="{{ url_for('admin.backup_download') }}">Download Encrypted Backup</a>
+    <p class="mt-2 text-muted">Ensure ENCRYPTION_KEY is set in your .env before using backups.</p>
+  </div>
+</div>
+<div class="card shadow">
+  <div class="card-body">
+    <h3 class="mb-3">Restore</h3>
+    <form method="POST" action="{{ url_for('admin.backup_restore') }}" enctype="multipart/form-data">
+      <input type="file" name="file" accept=".enc" class="form-control mb-3" required>
+      <button class="btn btn-warning" onclick="return confirm('Restoring will overwrite the database. Continue?');">Restore Backup</button>
+    </form>
+    <p class="mt-2 text-muted">After restore, restart the app.</p>
+  </div>
+</div>
+{% endblock %}
