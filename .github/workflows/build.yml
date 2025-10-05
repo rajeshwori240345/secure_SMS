@@ -10,21 +10,30 @@ permissions:
   contents: read
   pull-requests: read
 
+env:
+  PROJECT_DIR: secure_SMS
+
 jobs:
   sonarqube:
-    name: SonarQube
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: secure-sms
+        working-directory: ${{ env.PROJECT_DIR }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # needed for proper analysis
+          fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Sanity check paths
+        run: |
+          set -euxo pipefail
+          pwd
+          ls -la
+          echo "PROJECT_DIR=${PROJECT_DIR}"
+          test -d "${PROJECT_DIR}"
+          ls -la "${PROJECT_DIR}" | head -n 50
+
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
@@ -41,5 +50,4 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          # For self-hosted only (comment out if using SonarQube Cloud):
-          # SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          # SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}  # uncomment for self-hosted
