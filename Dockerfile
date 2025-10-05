@@ -6,4 +6,4 @@ COPY . .
 ENV PORT=8000
 ENV FLASK_APP=secure-sms.app.__init__
 EXPOSE 8000
-CMD ["sh", "-c", "gunicorn -w 2 -b 0.0.0.0:8000 secure-sms.app.__init__:app"]
+CMD ["gunicorn","-w","2","-b","0.0.0.0:8000","run:app"]
