@@ -1,59 +1,90 @@
 name: Build
 
-    on:
-      push:
-        branches: [ "main", "master" ]
-      pull_request:
-        types: [opened, synchronize, reopened]
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    # Run on all PR events so incoming changes are validated
+    types: [opened, synchronize, reopened]
 
-    permissions:
-      contents: read
-      pull-requests: read
+permissions:
+  contents: read
+  pull-requests: read
 
-    env:
-      PROJECT_DIR: secure-sms
-      # Ensure the project directory is added to PYTHONPATH so top-level modules like
-      # run.py can be imported during the build and test steps.  Without this,
-      # pytest may fail with ModuleNotFoundError because the working directory
-      # contains a hyphen and isn't added to sys.path by default.
-      PYTHONPATH: ${{ github.workspace }}/${{ env.PROJECT_DIR }}
+<<<<<<< Updated upstream
+env:
+  PROJECT_DIR: secure_SMS
+=======
+# Define the relative location of the Python project.  In this repository the
+# application lives in the ``secure-sms`` folder (not ``secure_SMS``), so the
+# working directory and associated checks need to point there.  The previous
+# workflow used ``secure_SMS``, which caused the checkout and test steps to
+# operate on a non‑existent path and fail.
+env:
+  PROJECT_DIR: secure-sms
+>>>>>>> Stashed changes
 
-    jobs:
-      build-and-scan:
-        runs-on: ubuntu-latest
-        defaults:
-          run:
-            working-directory: ${{ env.PROJECT_DIR }}
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v4
-            with:
-              fetch-depth: 0
+jobs:
+  sonarqube:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.PROJECT_DIR }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-          - name: Sanity check paths
-            run: |
-              set -euxo pipefail
-              pwd
-              ls -la
-              echo "PROJECT_DIR=${PROJECT_DIR}"
-              test -d "${PROJECT_DIR}"
-              ls -la "${PROJECT_DIR}" | head -n 50
+      - name: Sanity check paths
+        run: |
+          set -euxo pipefail
+<<<<<<< Updated upstream
+          pwd
+          ls -la
+          echo "PROJECT_DIR=${PROJECT_DIR}"
+          test -d "${PROJECT_DIR}"
+          ls -la "${PROJECT_DIR}" | head -n 50
 
-          - name: Set up Python
-            uses: actions/setup-python@v5
-            with:
-              python-version: "3.11"
-              cache: pip
+      - uses: actions/setup-python@v5
+=======
+          echo "PROJECT_DIR=${PROJECT_DIR}"
+          test -d "${PROJECT_DIR}"  # ensure project folder exists
+          ls -la "${PROJECT_DIR}" | head -n 50
 
-          - name: Install & test (coverage)
-            run: |
-              python -m pip install --upgrade pip
-              if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-              pip install pytest pytest-cov
-              pytest -q --disable-warnings --maxfail=1 --cov=. --cov-report=xml --cov-report=term
+      - name: Set up Python
+        uses: actions/setup-python@v5
+>>>>>>> Stashed changes
+        with:
+          python-version: "3.11"
+          cache: pip
 
-          - name: SonarQube Scan
-            uses: SonarSource/sonarqube-scan-action@v6
-            env:
-              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-              # SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}  # uncomment if self-hosted
+<<<<<<< Updated upstream
+      - name: Install & test (coverage)
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pytest pytest-cov
+=======
+      - name: Install dependencies and run tests with coverage
+        run: |
+          python -m pip install --upgrade pip
+          # Install project requirements if present
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pytest pytest-cov
+          # Run the test suite and collect coverage for SonarQube
+>>>>>>> Stashed changes
+          pytest -q --disable-warnings --maxfail=1 \
+            --cov=. --cov-report=xml --cov-report=term
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+<<<<<<< Updated upstream
+          # SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}  # uncomment for self-hosted
+=======
+          # If you are using a self‑hosted SonarQube server, set SONAR_HOST_URL
+          # via your repository’s secrets.  When using SonarCloud you can
+          # omit SONAR_HOST_URL.
+>>>>>>> Stashed changes

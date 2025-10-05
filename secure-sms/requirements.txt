@@ -1,7 +1,4 @@
-# Use a flexible version range for Flask to ensure compatibility with
-# hosted package indices.  Fixing the upper bound allows for minor
-# updates while avoiding breaking changes in future major versions.
-Flask>=2.3.0,<4.0.0
+Flask==3.0.0
 Flask-Login==0.6.3
 Flask-WTF==1.2.1
 email_validator==2.2.0
