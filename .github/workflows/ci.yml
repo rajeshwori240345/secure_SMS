@@ -1,75 +1,69 @@
 name: CI
 
-    # Continuous integration workflow for the Secure SMS project.  This job
-    # runs on pushes and pull requests against the main branches.  It
-    # checks out the code, installs dependencies, runs the test suite with
-    # coverage, and then performs a SonarQube scan.  You must define
-    # a SONAR_TOKEN secret in your repository for the SonarQube scan to
-    # authenticate.  If you run SonarQube on your own server, also define
-    # SONAR_HOST_URL.
+# Continuous integration workflow for the Secure SMS project.  This job
+# runs on pushes and pull requests against the main branches.  It
+# checks out the code, installs dependencies, runs the test suite with
+# coverage, and then performs a SonarQube scan.  You must define
+# a SONAR_TOKEN secret in your repository for the SonarQube scan to
+# authenticate.  If you run SonarQube on your own server, also define
+# SONAR_HOST_URL.
 
-    on:
-      push:
-        branches: [ "main", "master" ]
-      pull_request:
-        branches: [ "main", "master" ]
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
 
-    permissions:
-      contents: read
-      pull-requests: read
+permissions:
+  contents: read
+  pull-requests: read
 
-    env:
-      # Directory containing the Python package.  Update this if you change
-      # the project layout.  Using an environment variable allows reuse
-      # across steps.
-      PROJECT_DIR: secure-sms
-      # Explicitly add the project directory to PYTHONPATH so that top-level modules
-      # such as run.py can be imported when running tests.  Without this, pytest
-      # cannot locate run.py because secure-sms contains a hyphen and is not a
-      # valid Python package name.  Including the workspace and project directory
-      # in PYTHONPATH fixes ModuleNotFoundError: No module named 'run'.
-      PYTHONPATH: ${{ github.workspace }}/${{ env.PROJECT_DIR }}
+env:
+  # Directory containing the Python package.  Update this if you change
+  # the project layout.  Using an environment variable allows reuse
+  # across steps.
+  PROJECT_DIR: secure-sms
 
-    jobs:
-      build:
-        runs-on: ubuntu-latest
-        defaults:
-          run:
-            working-directory: ${{ env.PROJECT_DIR }}
-        steps:
-          - name: Checkout repository
-            uses: actions/checkout@v4
-            with:
-              fetch-depth: 0
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.PROJECT_DIR }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-          - name: Display project directory contents (debug)
-            run: |
-              set -euxo pipefail
-              echo "Current working directory: $(pwd)"
-              echo "Listing root directory:" && ls -la ..
-              echo "Listing project directory $PROJECT_DIR:" && ls -la .
+      - name: Display project directory contents (debug)
+        run: |
+          set -euxo pipefail
+          echo "Current working directory: $(pwd)"
+          echo "Listing root directory:" && ls -la ..
+          echo "Listing project directory $PROJECT_DIR:" && ls -la .
 
-          - name: Set up Python
-            uses: actions/setup-python@v5
-            with:
-              python-version: "3.11"
-              cache: pip
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
 
-          - name: Install dependencies
-            run: |
-              python -m pip install --upgrade pip
-              if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-              pip install pytest pytest-cov
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pytest pytest-cov
 
-          - name: Run tests with coverage
-            run: |
-              pytest --disable-warnings --maxfail=1 --cov=. --cov-report=xml --cov-report=term
+      - name: Run tests with coverage
+        run: |
+          pytest --disable-warnings --maxfail=1 --cov=. --cov-report=xml --cov-report=term
 
-          - name: SonarQube scan
-            uses: SonarSource/sonarqube-scan-action@v6
-            with:
-              projectBaseDir: ${{ env.PROJECT_DIR }}
-            env:
-              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-              # Set SONAR_HOST_URL if you use a self-hosted SonarQube instance
-              # SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: SonarQube scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        with:
+          projectBaseDir: ${{ env.PROJECT_DIR }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          # Set SONAR_HOST_URL if you use a self-hosted SonarQube instance
+          # SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
