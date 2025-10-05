@@ -1,6 +1,7 @@
 from app import create_app, db
-from app.models import User, Student, Teacher
 from app.encryption import encrypt_text
+from app.models import User, Student, Teacher
+
 
 app = create_app()
 with app.app_context():
