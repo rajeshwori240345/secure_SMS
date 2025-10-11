@@ -38,9 +38,7 @@ A secure Student Management System built with Flask for local Windows developmen
    ```
 6. Run the app:
    ```bat
-   set FLASK_APP=run.py
-   set FLASK_ENV=development
-   flask run
+   python run.py
    ```
    Open http://127.0.0.1:5000
 
@@ -53,47 +51,6 @@ A secure Student Management System built with Flask for local Windows developmen
 - **Avoid "cryptography.fernet.InvalidToken"**: Ensure `ENCRYPTION_KEY` is set **before** running `init_db.py` or creating any encrypted data. If you change the key later, previously encrypted fields/backups cannot be decrypted.
 - OTP emails are attempted via Flask-Mail and **always logged/printed** to console for dev.
 - After restore, **restart** the app so SQLAlchemy picks up the new DB.
-
-## Screenshot Checklist
-1. Registration page (filled example).
-2. Login page (failed attempt message, then success).
-3. OTP entry page + console showing OTP code.
-4. Biometric simulation page (fingerprint verify button).
-5. Dashboard (grade distribution chart).
-6. Students list (admin view) showing decrypted addresses.
-7. New/Edit Student form.
-8. Teachers list and New/Edit Teacher form (admin).
-9. RBAC demo: teacher trying to access admin teachers page (403).
-10. Backup page + downloading encrypted backup.
-11. Restore form (file chooser) + success flash.
-12. Audit log snippet (logs/audit.log) with recent actions.
-13. Postman screenshot: `/api/login` to get JWT, then `/api/students` with Bearer token.
-14. XSS defense: a student name with `<script>` shows as text in list (no alert).
-
-## JWT API Examples
-- Login to get token:
-  ```http
-  POST /api/login
-  Content-Type: application/json
-
-  {"username":"admin","password":"Admin@123"}
-  ```
-  Response: `{"access_token":"<JWT>", "role":"admin"}`
-
-- List students:
-  ```http
-  GET /api/students
-  Authorization: Bearer <JWT>
-  ```
-
-- Create student:
-  ```http
-  POST /api/students
-  Authorization: Bearer <JWT>
-  Content-Type: application/json
-
-  {"name":"Test User","email":"test.user@example.com","address":"Somewhere","grade":"A"}
-  ```
 
 ## Security Practices
 - Passwords hashed with bcrypt.
