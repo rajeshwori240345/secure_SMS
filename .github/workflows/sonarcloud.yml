@@ -2,39 +2,46 @@ name: SonarCloud
 
 on:
   push:
-    branches: [ "**" ]
+    branches: ["**"]
   pull_request:
   workflow_dispatch:
 
 jobs:
-  analyze:
+  scan:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: secure-sms   # your app lives here
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
+          cache-dependency-path: |
+            secure-sms/requirements.txt
+            secure-sms/requirements-dev.txt
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
           pip install pytest pytest-cov
 
-      - name: Run tests with coverage
-        run: pytest --cov-report=xml
+      - name: Run tests (emit coverage.xml at repo root)
+        run: pytest -q --cov=. --cov-report=xml:../coverage.xml
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: SonarCloud scan
+        uses: SonarSource/sonarqube-scan-action@v5
         with:
+          projectBaseDir: secure-sms
           args: >
-            -Dsonar.projectKey=${{ github.repository }}
-            -Dsonar.organization=${{ github.repository_owner }}
-            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.python.coverage.reportPaths=../coverage.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # for PR decoration
+          SONAR_TOKEN:  ${{ secrets.SONAR_TOKEN }}    # SonarCloud token
